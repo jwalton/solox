@@ -1,0 +1,87 @@
+{
+    "name": "solox",
+    "version": "0.0.0-semantic-release",
+    "description": "MobX without the mob. A state management library for React.",
+    "sideEffects": false,
+    "module": "./dist/esm/index.js",
+    "main": "./dist/cjs/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js",
+            "default": "./dist/cjs/index.js"
+        }
+    },
+    "files": [
+        "dist/**/*"
+    ],
+    "scripts": {
+        "test": "npm run build && npm run lint && npm run test:unittest",
+        "build": "tsc && tsc -p tsconfig.cjs.json && ./bin/build-types.sh",
+        "clean": "rm -rf dist types coverage",
+        "test:unittest": "tsc -p test && jest",
+        "test:coverage": "tsc -p test && jest --coverage",
+        "lint": "npm run lint:source && npm run lint:tests",
+        "lint:source": "eslint --ext .ts --ext .tsx src",
+        "lint:tests": "eslint --ext .ts --ext .tsx test",
+        "prepare": "husky install && npm run build",
+        "prepublishOnly": "npm run build && npm test",
+        "semantic-release": "semantic-release"
+    },
+    "lint-staged": {
+        "**/*.ts": [
+            "eslint --ext ts --ext tsx"
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jwalton/solox.git"
+    },
+    "keywords": [
+        "react",
+        "state",
+        "MobX",
+        "immer"
+    ],
+    "author": {
+        "name": "Jason Walton",
+        "email": "dev@lucid.thedreaming.org",
+        "url": "https://www.thedreaming.org"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/exegesis-js/jwalton/solox/issues"
+    },
+    "homepage": "https://github.com/jwalton/solox#readme",
+    "devDependencies": {
+        "@types/chai": "^4.2.21",
+        "@types/jest": "^26.0.24",
+        "@types/node": "^12.0.0",
+        "@types/react": "^17.0.16",
+        "@typescript-eslint/eslint-plugin": "^4.29.1",
+        "@typescript-eslint/parser": "^4.29.1",
+        "chai": "^4.3.4",
+        "chai-as-promised": "^7.1.1",
+        "chai-jest": "^1.0.2",
+        "eslint": "^7.32.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-import": "^2.24.0",
+        "husky": "^7.0.1",
+        "jest": "^27.0.6",
+        "lint-staged": "^11.1.2",
+        "prettier": "^2.3.2",
+        "pretty-quick": "^3.1.1",
+        "react": "^17.0.2",
+        "semantic-release": "^17.4.4",
+        "ts-jest": "^27.0.4",
+        "ts-node": "^10.2.0",
+        "typescript": "^4.3.5"
+    },
+    "dependencies": {
+        "immer": "^9.0.5"
+    },
+    "peerDependencies": {
+        "react": ">= 16.8.0 < 18"
+    }
+}
