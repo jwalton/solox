@@ -129,17 +129,17 @@ export function useControllerState<S, R = Immutable<S>>(
     }
 
     // Update resultRef and force a re-render if the store changes.
-    useEffect(() => {
-        const unsubscribe = store.subscribe((state: Immutable<S>) => {
-            const newResult = latestSelector.current(state);
-            if (!latestIsEqual.current(resultRef.current, newResult)) {
-                resultRef.current = newResult;
-                setResult(newResult);
-            }
-        });
-
-        return () => unsubscribe();
-    }, [latestIsEqual, latestSelector, store]);
+    useEffect(
+        () =>
+            store.subscribe((state: Immutable<S>) => {
+                const newResult = latestSelector.current(state);
+                if (!latestIsEqual.current(resultRef.current, newResult)) {
+                    resultRef.current = newResult;
+                    setResult(newResult);
+                }
+            }),
+        [latestIsEqual, latestSelector, store]
+    );
 
     return resultRef.current;
 }
