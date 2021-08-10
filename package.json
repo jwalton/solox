@@ -1,6 +1,6 @@
 {
     "name": "solox",
-    "version": "0.0.0-semantic-release",
+    "version": "1.0.0",
     "description": "MobX without the mob. A state management library for React.",
     "sideEffects": false,
     "module": "./dist/esm/index.js",
