@@ -2,7 +2,7 @@
 
 [![NPM version](https://badge.fury.io/js/solox.svg)](https://npmjs.org/package/solox)
 ![Build Status](https://github.com/jwalton/solox/workflows/GitHub%20CI/badge.svg)
-[![Minzipped size](https://img.shields.io/bundlephobia/minzip/use-css-transition.svg)](https://bundlephobia.com/result?p=use-css-transition)
+[![Minzipped size](https://img.shields.io/bundlephobia/minzip/solox.svg)](https://bundlephobia.com/result?p=solox)
 
 ## What is it?
 
@@ -11,15 +11,20 @@ SoloX is a React state management library that focuses on:
 - Immutable data
 - No/minimal boilerplate
 - Low learning curve
-- Does not dictate architecture
-- Results are highly testable
+- Does not dictate architecture - can have global or local state
+- Results are easy to unit test
 - Native typescript support
 
 If you're familiar with MobX, this library "feels" a lot like it. You might call it a "poor man's MobX", or perhaps a "MobX superlegerra". The upside is that this library is increadibly small (doubly so if you're already using immer, it's only dependency) and easy to use, and you don't need to worry about wrapping your React components with `observer` higher-order components as you would in MobX. The biggest downside is that you need to be a bit more explicit about when you want to update state, but thanks to the [immer library](https://immerjs.github.io/immer/), updates will still be done as if the state is a regular mutable javascript object.
 
 ## How It Works
 
-If you're interested in the implementation details of SoloX, they're documented in [this blog post](TODO). The source code is well under 200 lines of code, including comments.
+If you're interested in the implementation details of SoloX, they're documented in [this blog post](http://www.thedreaming.org/2021/08/10/solox/). The source code is well under 200 lines of code, including comments.
+
+## Rules of SoloX
+
+- Whenever you want to update state, it has to be done inside a `state.update(...)` block.
+- Whenever you want to read state directly from a store in a React render function, or read computed values from a controller you must wrap the read in a `useControllerState()` hook. (Although you can read state directly from the store in a click handler or simlar "action".)
 
 ## A Quick Introduction
 
@@ -133,7 +138,7 @@ export const MyComponent = React.FC<unknown>() => {
 }
 ```
 
-### Async actions
+## Async actions
 
 Your actions are just functions; they can be async, they can take any number of parameters, and they can return any value. The only restriction here is that the function you pass to `update()` has to be synchronous. The trick is to make multiple calls into `update()` as your async action progresses:
 
