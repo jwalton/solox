@@ -36,6 +36,7 @@ describe('ImmutableModelStore', () => {
 
     it('should notify a subscriber when the store changes', () => {
         const store = new ImmutableModelStore({ name: 'Jason', age: 30 });
+
         const listener = jest.fn();
         store.subscribe(listener);
 
@@ -47,6 +48,21 @@ describe('ImmutableModelStore', () => {
 
         expect(listener).to.have.beenCalledTimes(1);
         expect(listener).to.have.beenCalledWith({ name: 'Jason', age: 31 });
+    });
+
+    it('should have consistent state when notifying a subscriber', () => {
+        const store = new ImmutableModelStore({ name: 'Jason', age: 30 });
+
+        store.subscribe((state) => {
+            // When calling a subscriber, we should be able to get the state
+            // from the passed in value or from the store, and it should be
+            // the same.
+            expect(state).to.equal(store.current);
+        });
+
+        store.update((state) => {
+            state.age = 31;
+        });
     });
 
     it('should unsubscribe from a store', () => {
