@@ -83,4 +83,21 @@ describe('ImmutableModelStore', () => {
         });
         expect(listener).to.have.beenCalledTimes(1);
     });
+
+    it('should handle an exception from update', () => {
+        const store = new ImmutableModelStore({ name: 'Jason', age: 30 });
+
+        expect(() =>
+            store.update((state) => {
+                state.age = 31;
+                throw new Error('boom');
+            })
+        ).to.throw('boom');
+
+        // Update should not have been applied.
+        expect(store.current.age).to.equal(30);
+
+        // We should not be in the middle of a re-rentrant update.
+        expect(store.updating).to.be.false;
+    });
 });

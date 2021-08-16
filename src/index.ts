@@ -21,6 +21,10 @@ export class ImmutableModelStore<S> {
         this.current = produce(initialState, () => void 0) as Immutable<S>;
     }
 
+    public get updating(): boolean {
+        return !!this._isUpdating;
+    }
+
     /**
      * update() will synchronously update the state of the model.
      *
@@ -35,22 +39,26 @@ export class ImmutableModelStore<S> {
         } else {
             const draft = (this._isUpdating = createDraft(this.current) as Draft<S>);
 
-            // Apply the update...
-            const voidResult = fn(draft) as any;
+            try {
+                // Apply the update...
+                const voidResult = fn(draft) as any;
 
-            // Paranoid check for async functions...
-            if (typeof voidResult === 'object' && 'then' in voidResult) {
-                throw new Error('Updates must be synchronous');
-            }
+                // Paranoid check for async functions...
+                if (typeof voidResult === 'object' && 'then' in voidResult) {
+                    throw new Error('Updates must be synchronous');
+                }
 
-            const newState = finishDraft(draft) as Immutable<S>;
+                const newState = finishDraft(draft) as Immutable<S>;
 
-            this._isUpdating = undefined;
-            if (newState !== this.current) {
-                this.current = newState;
+                this._isUpdating = undefined;
+                if (newState !== this.current) {
+                    this.current = newState;
 
-                // Notify subscribers.
-                this._subscribers.forEach((subscriber) => subscriber(this.current));
+                    // Notify subscribers.
+                    this._subscribers.forEach((subscriber) => subscriber(this.current));
+                }
+            } finally {
+                this._isUpdating = undefined;
             }
         }
     }
