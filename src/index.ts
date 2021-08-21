@@ -21,8 +21,19 @@ export class ImmutableModelStore<S> {
         this.current = produce(initialState, () => void 0) as Immutable<S>;
     }
 
+    /**
+     * True if we are in the middle of an update, false otherwise.
+     */
     public get updating(): boolean {
         return !!this._isUpdating;
+    }
+
+    /**
+     * This is the same as `this.current` when `this.updating` is false.  In the
+     * middle of an update, this will be the mutable draft state.
+     */
+    public get latest(): Immutable<S> {
+        return this._isUpdating || this.current;
     }
 
     /**
@@ -66,7 +77,7 @@ export class ImmutableModelStore<S> {
     /**
      * Subscribe to changes in this store's state.
      *
-     * @param subscriber The function to call when the state changes.
+     * @param subscriber The function to call when `state.current` changes.
      * @returns a function to call to unsubscribe.
      */
     public subscribe(subscriber: (newState: Immutable<S>) => void): () => void {

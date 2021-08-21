@@ -100,4 +100,14 @@ describe('ImmutableModelStore', () => {
         // We should not be in the middle of a re-rentrant update.
         expect(store.updating).to.be.false;
     });
+
+    it('should update latest', () => {
+        const store = new ImmutableModelStore({ name: 'Jason', age: 30 });
+
+        expect(store.latest.age).to.equal(30);
+        store.update((state) => {
+            state.age = 31;
+            expect(store.latest.age).to.equal(31);
+        });
+    });
 });

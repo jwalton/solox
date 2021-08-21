@@ -171,6 +171,10 @@ Create a new ImmutableModelStore.
 
 Return the current state.
 
+### ImmutableModelStore.updating
+
+True if the store is in the middle of an update, false otherwise.
+
 ### ImmutableModelStore.update(fn)
 
 Calls `fn(state)`. `fn` must be a synchronous function, which should make any updates to the state required, as if the state were regular mutable state. When the function returns, `ImmutableModelStore.current` will be updated with the new state.
