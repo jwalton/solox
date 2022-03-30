@@ -92,22 +92,22 @@ todoController.state.subscribe((state) => {
 When we want to use this in a React component, we can either use the global controller we created above, or we can create a local controller with `useLocalController()`. Either way, though, the `todoController` instance never changes - only `todoController.state.current` changes when the state is updated. This is very similar to `ref` in React - changing the contents of the ref won't cause the component to re-render. This means that if we want this React component to update when the state changes, we need to subscribe to the state with `useControllerState()`.
 
 ```tsx
-import { useLocalController } from 'solox';
+import { useControllerState, useLocalController } from 'solox';
 
-export const MyComponent = React.FC<unknown>() => {
+export const MyComponent: React.FC<unknown> = () => {
   const todoController = useLocalController(() => new TodoController());
-  const state = useControllerState(controller.state);
+  const state = useControllerState(todoController.state);
 
   return (
     <div>
       <ul>
         {state.todos.map((todo, index) => (
-          <li id={index}>{todo.task}</li>
+          <li key={`todo-${index}`}>{todo.task}</li>
         ))}
       </ul>
     </div>
   );
-}
+};
 ```
 
 Once we subscribe to the state, we can either pass that state down to children (which will cause them to re-render when that state changes) or we can pass the whole controller down (or via a context) and then `useControllerState()` can be used to select specific values from the state, and only re-render if they change, or to select derived values from the controller:
@@ -115,27 +115,31 @@ Once we subscribe to the state, we can either pass that state down to children (
 ```tsx
 import isShallowEqual from '@wordpress/is-shallow-equal';
 
-export const MyComponent = React.FC<unknown>() => {
+export const MyComponent: React.FC<unknown> = () => {
   const todoController = useLocalController(() => new TodoController());
 
   // Only re-render this component if state.todos or completedTodosCount changes.
-  const { todos, completedTodosCount } = useControllerState(controller.state, (state) => {
-    return {
-      todos: state.todos,
-      completedTodosCount: todoController.completedTodosCount
-    }
-  }, isShallowEqual);
+  const { todos, completedTodosCount } = useControllerState(
+    controller.state,
+    (state) => {
+      return {
+        todos: state.todos,
+        completedTodosCount: todoController.completedTodosCount,
+      };
+    },
+    isShallowEqual
+  );
 
   return (
     <div>
       <ul>
         {state.todos.map((todo, index) => (
-          <li id={index}>{todo.task}</li>
+          <li key={`todo-${index}`}>{todo.task}</li>
         ))}
       </ul>
     </div>
   );
-}
+};
 ```
 
 ## Async actions

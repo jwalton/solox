@@ -3,9 +3,9 @@
         /* Basic Options */
         "target": "es2018",
         "module": "es6",
-        "lib": ["es2018"],
+        "lib": ["es2018", "dom"],
         "allowJs": false,
-        // "jsx": "preserve",                     /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
+        "jsx": "react",
         "declaration": true,
         "sourceMap": true,
         "outDir": "./dist/esm",

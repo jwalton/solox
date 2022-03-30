@@ -5,7 +5,7 @@ module.exports = {
             // You can specify a path to your tsconfig.json file,
             // but since we're compiling specifically for node here,
             // this works too.
-            tsConfig: {
+            tsconfig: {
                 target: 'es2019',
             },
         },
@@ -20,5 +20,5 @@ module.exports = {
     // Tells Jest what folders to ignore for tests
     testPathIgnorePatterns: [`node_modules`, `\\.cache`],
     testURL: `http://localhost`,
-    testMatch: ['**/test/**/*Test.ts'],
+    testMatch: ['**/test/**/*Test.ts?(x)'],
 };
