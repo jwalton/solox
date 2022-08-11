@@ -19,6 +19,8 @@ module.exports = {
     },
     // Tells Jest what folders to ignore for tests
     testPathIgnorePatterns: [`node_modules`, `\\.cache`],
-    testURL: `http://localhost`,
+    testEnvironmentOptions: {
+        url: 'http://localhost',
+    },
     testMatch: ['**/test/**/*Test.ts?(x)'],
 };
