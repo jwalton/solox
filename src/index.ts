@@ -48,7 +48,7 @@ export class ImmutableModelStore<S> {
                     throw new Error('Updates must be synchronous');
                 }
 
-                const newState = finishDraft(draft) as Immutable<S>;
+                const newState = finishDraft(draft) as unknown as Immutable<S>;
 
                 this._isUpdating = undefined;
                 if (newState !== this.current) {
