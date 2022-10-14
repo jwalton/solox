@@ -100,4 +100,23 @@ describe('ImmutableModelStore', () => {
         // We should not be in the middle of a re-rentrant update.
         expect(store.updating).to.be.false;
     });
+
+    it('should accept various types of objects', () => {
+        new ImmutableModelStore({ obj: true });
+        new ImmutableModelStore([1, 2, 3]);
+    });
+
+    it('should allow explicit types', () => {
+        interface Person {
+            name: string;
+            age: number;
+        }
+
+        const store = new ImmutableModelStore<Person>({ name: 'Jason', age: 30 });
+        store.update((state: Person) => {
+            state.name = 'Oriana';
+        });
+
+        expect(store.current).to.eql({ name: 'Oriana', age: 30 });
+    });
 });

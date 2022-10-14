@@ -1,15 +1,17 @@
 import { createDraft, Draft, finishDraft, Immutable, produce } from 'immer';
 import { useEffect, useRef, useState } from 'react';
 
+type Objectish = { [key: string]: any } | unknown[];
+
 /**
  * Keep track of immutable state in a controller.
  */
-export class ImmutableModelStore<S> {
+export class ImmutableModelStore<S extends Objectish> {
     /** The current state for this store. */
     public current: Immutable<S>;
 
     // If we are in the middle of an update, this is the draft that is being updated.
-    private _isUpdating: Draft<S> | undefined;
+    private _isUpdating: Draft<Immutable<S>> | undefined;
 
     // A list of subscribers to this store.
     private _subscribers: ((newValue: Immutable<S>) => void)[] = [];
@@ -17,8 +19,8 @@ export class ImmutableModelStore<S> {
     /**
      * Create a new ImmutableModelStore.
      */
-    constructor(initialState: S) {
-        this.current = produce(initialState, () => void 0) as Immutable<S>;
+    constructor(initialState: Immutable<S>) {
+        this.current = produce(initialState, () => void 0);
     }
 
     public get updating(): boolean {
@@ -33,22 +35,22 @@ export class ImmutableModelStore<S> {
      * be applied when `fn` returns.  Recursive/nested calls to  `update` will be
      * handled correctly.
      */
-    public update(fn: (state: Draft<S>) => void): void {
+    public update(fn: (state: Draft<Immutable<S>>) => void): void {
         if (this._isUpdating) {
             fn(this._isUpdating);
         } else {
-            const draft = (this._isUpdating = createDraft(this.current) as Draft<S>);
+            const draft = (this._isUpdating = createDraft(this.current));
 
             try {
                 // Apply the update...
-                const voidResult = fn(draft) as any;
+                const voidResult = fn(draft);
 
                 // Paranoid check for async functions...
                 if (typeof voidResult === 'object' && 'then' in voidResult) {
                     throw new Error('Updates must be synchronous');
                 }
 
-                const newState = finishDraft(draft) as unknown as Immutable<S>;
+                const newState = finishDraft(draft);
 
                 this._isUpdating = undefined;
                 if (newState !== this.current) {
@@ -111,7 +113,7 @@ function useLatest<T>(thing: T): [React.MutableRefObject<T>, boolean] {
  *   will be compared using `===`. If this is provided, this function will be
  *   used instead.
  */
-export function useControllerState<S, R = Immutable<S>>(
+export function useControllerState<S extends Objectish, R = Immutable<S>>(
     store: ImmutableModelStore<S>,
     selector?: (state: Immutable<S>) => R,
     isEqual?: (oldState: R, newState: R) => boolean
