@@ -199,7 +199,7 @@ If you return multiple values, you can also pass an optional `isEqual` function,
 
 ```ts
 const { name, age } = useControllerState(
-  useController,
+  userController,
   (state) => ({ name: state.name, age: state.age }),
   isShallowEqual
 );
@@ -211,6 +211,28 @@ Convenience hook for creating a new local controller. Calling this is equivalent
 
 ```ts
 const [controller] = useState(initializer);
+```
+
+### Usage with useSyncExternalStore
+
+An ImmutableModelStore can be listened to with `useSyncExternalStore()`:
+
+```ts
+const todoController = useLocalController(() => new TodoController());
+const state = useSyncExternalStore(
+  todoController.state.subscribe,
+  todoController.state.getSnapshot
+);
+```
+
+You can also select sub-fields out of the state, similar to `useControllerState`:
+
+```ts
+const todoController = useLocalController(() => new TodoController());
+const todos = useSyncExternalStore(
+  todoController.state.subscribe,
+  () => todoController.state.todos
+);
 ```
 
 Copyright 2021 Jason Walton

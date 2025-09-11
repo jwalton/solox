@@ -79,16 +79,23 @@ export class ImmutableModelStore<S extends Objectish> {
     /**
      * Subscribe to changes in this store's state.
      *
+     * `subscribe` is compatible with React's `useSyncExternalStore` hook.
+     *
      * @param subscriber The function to call when the state changes.
      * @returns a function to call to unsubscribe.
      */
-    public subscribe(subscriber: (newState: Immutable<S>) => void): () => void {
+    public subscribe = (subscriber: (newState: Immutable<S>) => void): (() => void) => {
         this._subscribers.push(subscriber);
 
         return () => {
             this._subscribers = this._subscribers.filter((s) => s !== subscriber);
         };
-    }
+    };
+
+    /** getSnapshot() is compatitble with the React `useSyncExternalStore` hook. */
+    public getSnapshot: () => Immutable<S> = () => {
+        return this.current;
+    };
 }
 
 /**
