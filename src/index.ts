@@ -1,6 +1,7 @@
 import { createDraft, Draft, finishDraft, Immutable, produce } from 'immer';
 import { useEffect, useRef, useState } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Objectish = { [key: string]: any } | unknown[];
 
 /**
@@ -50,7 +51,7 @@ export class ImmutableModelStore<S extends Objectish> {
                     throw new Error('Updates must be synchronous');
                 }
 
-                const newState = finishDraft(draft);
+                const newState = finishDraft(draft) as Immutable<S>;
 
                 this._isUpdating = undefined;
                 if (newState !== this.current) {
@@ -155,7 +156,7 @@ export function useControllerState<S extends Objectish, R = Immutable<S>>(
 }
 
 function defaultSelector<S, R>(state: Immutable<S>): R {
-    return state as any as R;
+    return state as unknown as R;
 }
 
 function defaultIsEqual<R>(oldState: R, newState: R): boolean {

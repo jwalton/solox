@@ -1,11 +1,6 @@
-/**
- * @jest-environment node
- */
-
-import chai from 'chai';
-import chaiJest from 'chai-jest';
-import { ImmutableModelStore } from '../src/index';
-chai.use(chaiJest);
+import * as chai from 'chai';
+import { describe, it } from 'vitest';
+import { ImmutableModelStore } from './index.js';
 
 const { expect } = chai;
 
@@ -37,17 +32,21 @@ describe('ImmutableModelStore', () => {
     it('should notify a subscriber when the store changes', () => {
         const store = new ImmutableModelStore({ name: 'Jason', age: 30 });
 
-        const listener = jest.fn();
+        const calls: unknown[][] = [];
+        const listener = (...args: unknown[]) => {
+            calls.push(args);
+        };
+
         store.subscribe(listener);
 
-        expect(listener).to.not.have.beenCalled;
+        expect(calls.length).to.equal(0);
 
         store.update((state) => {
             state.age = 31;
         });
 
-        expect(listener).to.have.beenCalledTimes(1);
-        expect(listener).to.have.beenCalledWith({ name: 'Jason', age: 31 });
+        expect(calls.length).to.equal(1);
+        expect(calls[0][0]).to.eql({ name: 'Jason', age: 31 });
     });
 
     it('should have consistent state when notifying a subscriber', () => {
@@ -67,21 +66,26 @@ describe('ImmutableModelStore', () => {
 
     it('should unsubscribe from a store', () => {
         const store = new ImmutableModelStore({ name: 'Jason', age: 30 });
-        const listener = jest.fn();
+
+        let calls = 0;
+        const listener = () => {
+            calls += 1;
+        };
+
         const unsubscribe = store.subscribe(listener);
 
-        expect(listener).to.not.have.beenCalled;
+        expect(calls).to.equal(0);
 
         store.update((state) => {
             state.age = 31;
         });
-        expect(listener).to.have.beenCalledTimes(1);
+        expect(calls).to.equal(1);
 
         unsubscribe();
         store.update((state) => {
             state.age = 31;
         });
-        expect(listener).to.have.beenCalledTimes(1);
+        expect(calls).to.equal(1);
     });
 
     it('should handle an exception from update', () => {

@@ -1,12 +1,8 @@
-/**
- * @jest-environment jsdom
- */
-
+import { expect } from 'chai';
 import React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
-import { ImmutableModelStore, useControllerState, useLocalController } from '../src';
-import { act } from 'react-dom/test-utils';
-import { expect } from 'chai';
+import { describe, it, beforeAll, beforeEach, afterEach } from 'vitest';
+import { ImmutableModelStore, useControllerState, useLocalController } from './index.js';
 
 interface Task {
     task: string;
@@ -67,7 +63,8 @@ describe('react test', () => {
     let root: ReactDOMClient.Root;
 
     beforeAll(() => {
-        (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
+        (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT =
+            true;
     });
 
     beforeEach(() => {
@@ -78,19 +75,19 @@ describe('react test', () => {
     });
 
     afterEach(() => {
-        act(() => {
+        React.act(() => {
             root.unmount();
         });
         container.remove();
     });
 
     it('should render the component', async () => {
-        act(() => {
+        React.act(() => {
             root.render(<TestComponent />);
         });
 
         const button = document.querySelector('[data-testid=add-todo]') as Element;
-        act(() => {
+        React.act(() => {
             button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         });
         expect(container.textContent).to.include('Buy milk');
