@@ -17,6 +17,16 @@ describe('ImmutableModelStore', () => {
         expect(store.current).to.eql({ name: 'Jason', age: 31 });
     });
 
+    it('should update state via an object', () => {
+        const store = new ImmutableModelStore({ name: 'Jason', age: 30 });
+        const intialState = store.current;
+
+        store.update({ age: 31 });
+
+        expect(intialState).to.eql({ name: 'Jason', age: 30 });
+        expect(store.current).to.eql({ name: 'Jason', age: 31 });
+    });
+
     it('should allow nested updates', () => {
         const store = new ImmutableModelStore({ name: 'Jason', age: 30 });
         store.update((state) => {

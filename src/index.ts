@@ -31,20 +31,30 @@ export class ImmutableModelStore<S extends Objectish> {
     /**
      * update() will synchronously update the state of the model.
      *
-     * @param fn - This must be a synchronous function.  It will be passed a
+     * @param update - If `update` is an object, then any properties defined in the object
+     * will be copied into the current state.
+     *
+     * If `update` is a synchronous function, the function will be passed a
      * mutable version of the state, which can be edited directly.  Updates will
      * be applied when `fn` returns.  Recursive/nested calls to  `update` will be
      * handled correctly.
      */
-    public update(fn: (state: Draft<Immutable<S>>) => void): void {
+    public update(update: Partial<S> | ((state: Draft<Immutable<S>>) => void)): void {
+        if (typeof update !== 'function') {
+            const obj = update;
+            update = (state) => {
+                Object.assign(state, obj);
+            };
+        }
+
         if (this._isUpdating) {
-            fn(this._isUpdating);
+            update(this._isUpdating);
         } else {
             const draft = (this._isUpdating = createDraft(this.current));
 
             try {
                 // Apply the update...
-                const voidResult = fn(draft);
+                const voidResult = update(draft);
 
                 // Paranoid check for async functions...
                 if (typeof voidResult === 'object' && 'then' in voidResult) {

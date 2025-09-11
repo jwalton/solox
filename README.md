@@ -175,9 +175,11 @@ Create a new ImmutableModelStore.
 
 Return the current state.
 
-### ImmutableModelStore.update(fn)
+### ImmutableModelStore.update(u)
 
-Calls `fn(state)`. `fn` must be a synchronous function, which should make any updates to the state required, as if the state were regular mutable state. When the function returns, `ImmutableModelStore.current` will be updated with the new state.
+If `u` is an object, this will copy any fields out of the object into the state in `ImmutableModelStore.current`;
+
+If `u` is a function, this will call `u(state)`. `u` must be a synchronous function, which should make any updates to the state required, as if the state were regular mutable state. When the function returns, `ImmutableModelStore.current` will be updated with the new state.
 
 Note that you can nest calls to `update()` - the state will not be changed until the outermost call to `update()` returns.
 
