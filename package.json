@@ -3,7 +3,10 @@
     "version": "1.0.0",
     "description": "MobX without the mob. A state management library for React.",
     "sideEffects": false,
-    "module": "./dist/index.js",
+    "main": "./dist/index.js",
+    "exports": {
+        ".": "./dist/index.js"
+    },
     "types": "./dist/index.d.ts",
     "type": "module",
     "files": [
