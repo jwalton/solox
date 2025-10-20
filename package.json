@@ -67,7 +67,7 @@
         "pretty-quick": "^4.2.2",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
-        "semantic-release": "^24.2.8",
+        "semantic-release": "^25.0.1",
         "ts-node": "^10.9.2",
         "typescript": "^5.9.2",
         "typescript-eslint": "^8.43.0",
