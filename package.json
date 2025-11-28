@@ -74,7 +74,7 @@
         "vitest": "^4.0.2"
     },
     "dependencies": {
-        "immer": "^10.1.3"
+        "immer": "^11.0.1"
     },
     "peerDependencies": {
         "react": ">= 16.8.0 < 20"
